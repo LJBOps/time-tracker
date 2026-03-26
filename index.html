@@ -350,16 +350,12 @@ async function loadClients() {
     const data = await res.json();
     const now = new Date();
     const currentMonth = now.toLocaleString('en-US', { month: 'long' }) + ' ' + now.getFullYear();
-    // Prefer column H client list from sheet; fall back to logged-entry names
-    if (Array.isArray(data?.clients) && data.clients.length > 0) {
-      CLIENTS = data.clients;
+    // Use only the current month's tab (column H) — no cross-month bleed
+    const monthData = data?.allMonths?.[currentMonth]?.clients;
+    if (monthData && Object.keys(monthData).length > 0) {
+      CLIENTS = Object.keys(monthData);
     } else {
-      const monthData = data?.allMonths?.[currentMonth]?.clients;
-      if (monthData && Object.keys(monthData).length > 0) {
-        CLIENTS = Object.keys(monthData);
-      } else {
-        CLIENTS = FALLBACK_CLIENTS;
-      }
+      CLIENTS = FALLBACK_CLIENTS;
     }
     document.getElementById('clientStatus').textContent = '● Live — ' + currentMonth;
     document.getElementById('clientStatus').className = 'client-status live';
