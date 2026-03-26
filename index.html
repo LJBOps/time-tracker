@@ -343,10 +343,10 @@ let isPaused = false;
 let pausedAt = 0;
 // ─── LOAD CLIENTS FROM SHEET (current month only) ────────────────────────────
 async function loadClients() {
-  const url = localStorage.getItem('scriptUrl') || APPS_SCRIPT_URL;
   try {
-    // Fetch full dataset (same as dashboard) so we can filter by current month
-    const res = await fetch(url);
+    // Always use the hardcoded URL for reading clients — localStorage override
+    // is only for POST submissions, not for this GET request
+    const res = await fetch(APPS_SCRIPT_URL);
     const data = await res.json();
     const now = new Date();
     const currentMonth = now.toLocaleString('en-US', { month: 'long' }) + ' ' + now.getFullYear();
